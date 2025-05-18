@@ -1,9 +1,9 @@
 <template>
     <div class="login">
       <h2>Login Page</h2>
-      <form>
-        <input type="text" placeholder="Username" required />
-        <input type="password" placeholder="Password" required />
+      <form @submit.prevent="handleLogin">
+        <input v-model="username" type="text" placeholder="Username"  />
+        <input v-model="password" type="password" placeholder="Password"  />
         <button type="submit">Login</button>
       </form>
     </div>
@@ -11,6 +11,24 @@
   
 
 <script setup>
+import { ref } from 'vue';
+import { useUserStore } from '../store/user';
+import { useRouter } from 'vue-router';
+
+const username = ref("")
+const password = ref("")
+
+const userStore = useUserStore()
+const router = useRouter()
+
+function handleLogin(){
+  if(username.value && password.value){
+    userStore.login(username.value)
+    router.push("/dashboard")
+  } else{
+    alert("Please enter the information")
+  }
+}
 </script>
 
 
