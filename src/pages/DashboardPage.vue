@@ -1,12 +1,13 @@
 <template>
   <div class="dashboard">
     <h2>Your Dashboard</h2>
-    <div>
+    <div v-if="appointmentsStore.appointments.length === 0">
       No turn has been recorded.
     </div>
     <ul>
-      <li>
-        <button>Cancel</button>
+      <li v-for="(appt, index) in appointmentsStore.appointments" :key="index">
+        {{ appt }}
+        <button @click="cancelAppointment(index)">Cancel</button>
       </li>
     </ul>
     <router-link to="/booking">Booking Page</router-link>
@@ -14,8 +15,21 @@
   </div>
 </template>
 
-
 <script setup>
+import { watchEffect } from 'vue'
+import { useAppointmentsStore } from '../store/appointments'
+import { useUserStore } from '../store/user'
+
+const appointmentsStore = useAppointmentsStore()
+const userStore = useUserStore()
+
+watchEffect(() => {
+  appointmentsStore.loadAppointments(userStore.currentUser)
+})
+
+const cancelAppointment = (index) => {
+  appointmentsStore.cancelAppointment(index)
+}
 </script>
 
 
