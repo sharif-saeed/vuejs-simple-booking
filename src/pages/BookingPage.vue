@@ -2,8 +2,9 @@
   <div class="booking">
     <h2>Appointment Booking</h2>
     <ul>
-      <li>
-        <button>Reservation</button>
+      <li v-for="(time, index) in availableTimes" :key="index">
+        {{ time }}
+        <button @click="reserveTime(time)" :disabled="isReserved(time)">Reservation</button>
       </li>
     </ul>
     <router-link to="/dashboard">Dashboard Page</router-link>
@@ -12,6 +13,31 @@
 
 
 <script setup>
+import { onMounted, ref } from 'vue';
+import { useAppointmentsStore } from '../store/appointments';
+
+  const appointmentStore = useAppointmentsStore()
+
+  const availableTimes = ref([
+  'Saturday 10:00 AM',
+  'Saturday 3:00 PM',
+  'Sunday 11:00 AM',
+  'Monday 2:00 PM',
+  'Tuesday 9:00 AM',
+  ])
+
+  onMounted(()=>{
+    appointmentStore.loadAppointments(localStorage.getItem("currentUser") || "")
+  })
+
+  function reserveTime(time){
+    appointmentStore.reserve(time)
+  }
+
+  function isReserved(time){
+    return appointmentStore.isReserved(time)
+  }
+
 </script>
 
   
